@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <link rel="stylesheet" href="quiz.css">
+  <style>
+    *{
+  background-color: rgb(248, 166, 4);
+  
+}
+.main_heading{
+  margin-top: -10px;
+  margin-left: -10px;
+  margin-right: -10px;
+  font-size: 50px;
+  border: 1px solid #e09812;
+  text-align: center;
+  background-color: rgb(12, 11, 9);
+  border-radius: 10px;
+}
+.paragraph{
+  font-size: 50px;
+  
+  border:1px solid black;
+  background: black;
+  margin-left: -10px;
+  margin-right: -10px;
+  border-radius: 10px;
+}
+
+.cards{
+  display: flex;
+  
+  padding: 250px;
+  margin-top: 50px;
+  width: auto; 
+  height: 200px
+  
+  
+}
+#html{
+  background: rgb(247, 247, 132);
+  border:1px solid black;
+  border-radius: 10px;
+  margin-left: 50px;
+  padding: 70px;
+
+}
+#css{
+  background: rgb(105, 105, 237);
+  border: 1px solid black;
+  border-radius: 10px;
+  margin-left: 50px;
+  padding: 70px;
+
+}
+#javascript{
+  background: rgb(226, 103, 103);
+  border-radius: 10px;
+  border: 1px solid black;
+  margin-left: 50px;
+  padding: 70px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="main_heading" style="color: white;">FRONT-END QUIZ</div>
+  <div class="paragraph" style="color: white;">"Choose a category to assess your web development knowledge."</div>
+  
+  
+
+  <div class="cards">
+    
+    <button onclick="go()" id="html"><h1 style="background-color: rgb(226, 226, 103);" >HTML</h1></button> 
+    <br>
+    <button onclick="go2()" id="css"><h1 style="background-color: rgb(105, 105, 237);">CSS</h1></button> 
+    <br>
+    <button onclick="go3()" id="javascript"><h1 style="background-color: rgb(226, 103, 103);">JAVASCRIPT</h1></button>
+    
+  </div>
+  
+  
+ 
+  
+
+  <script>
+    function go() {
+      window.location.href = "quiz2.html"; // Change to your target page
+    }
+    function go2(){
+      window.location.href ="quiz3.html";
+
+    }
+    function go3(){
+      window.location.href ="quiz4.html";
+
+    }
+
+  </script>
+
+</body>
+</html>

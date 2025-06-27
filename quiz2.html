@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HTML Quiz - CSS Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("back.jpeg") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 90%;
+    }
+    #timer {
+      text-align: right;
+      font-weight: bold;
+      color: #c0392b;
+    }
+    #result {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .question-block {
+      margin-top: 20px;
+    }
+    .question-text {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .options label {
+      display: block;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid #ccc;
+      transition: background-color 0.3s;
+    }
+    .options label:hover {
+      background-color: #f0f8ff;
+    }
+    .options input[type="radio"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    label.selected {
+      background-color: #d0e7ff;
+      color: #003366;
+      border-color: #003366;
+    }
+    #next-btn, #retry-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+    #next-btn:disabled {
+      background-color: #a0c4ff;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h2>HTML Quiz</h2>
+  <div id="timer">Time Left: 5:00</div>
+  
+  <form id="quiz-form">
+    <!-- Questions will be dynamically inserted here -->
+  </form>
+
+  <button type="button" id="next-btn" disabled>Next</button>
+  <button type="button" id="retry-btn" style="display:none;">Re-Quiz</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+  const quizForm = document.getElementById('quiz-form');
+  const nextBtn = document.getElementById('next-btn');
+  const retryBtn = document.getElementById('retry-btn');
+  const resultEl = document.getElementById('result');
+  const timerEl = document.getElementById('timer');
+
+  // Questions stored as JS objects
+  const questions = [
+    {
+      question: "What does HTML stand for?",
+      options: [
+        "Hyperlinks and Text Markup Language",
+        "Hyper Text Markup Language",
+        "Home Tool Markup Language"
+      ],
+      correct: "Hyper Text Markup Language"
+    },
+    {
+      question: "Which tag is used to insert an image?",
+      options: ["<img>", "<image>", "<src>"],
+      correct: "<img>"
+    },
+    {
+      question: "Which tag creates a numbered list?",
+      options: ["<ul>", "<ol>", "<li>"],
+      correct: "<ol>"
+    },
+    {
+      question: "What tag is used for a line break?",
+      options: ["<br>", "<lb>", "<break>"],
+      correct: "<br>"
+    },
+    {
+      question: "What does the <a> tag do?",
+      options: ["Adds an image", "Makes a paragraph", "Creates a hyperlink"],
+      correct: "Creates a hyperlink"
+    }
+  ];
+
+  let current = 0;
+  let score = 0;
+  let selectedAnswer = null;
+
+  let globalTime = 300; // 5 minutes in seconds
+  let timer;
+
+  function startTimer() {
+    timer = setInterval(() => {
+      globalTime--;
+      const minutes = Math.floor(globalTime / 60);
+      const seconds = globalTime % 60;
+      timerEl.textContent = `Time Left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      if(globalTime <= 0){
+        clearInterval(timer);
+        finishQuiz();
+      }
+    }, 1000);
+  }
+
+  function renderQuestion(index) {
+    selectedAnswer = null;
+    nextBtn.disabled = true;
+    quizForm.innerHTML = ""; // clear previous question
+
+    const q = questions[index];
+
+    // Question block
+    const questionBlock = document.createElement('div');
+    questionBlock.className = 'question-block';
+
+    // Question text
+    const questionText = document.createElement('div');
+    questionText.className = 'question-text';
+    questionText.textContent = `${index + 1}. ${q.question}`;
+    questionBlock.appendChild(questionText);
+
+    // Options
+    const optionsDiv = document.createElement('div');
+    optionsDiv.className = 'options';
+
+    q.options.forEach((option, i) => {
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'answer';
+      input.value = option;
+
+      // Event to select answer
+      input.addEventListener('change', () => {
+        selectedAnswer = input.value;
+        // Remove previous selected style
+        optionsDiv.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
+        label.classList.add('selected');
+        nextBtn.disabled = false;
+      });
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(option));
+      optionsDiv.appendChild(label);
+    });
+
+    questionBlock.appendChild(optionsDiv);
+    quizForm.appendChild(questionBlock);
+  }
+
+  function finishQuiz() {
+    quizForm.style.display = 'none';
+    nextBtn.style.display = 'none';
+    timerEl.style.display = 'none';
+
+    resultEl.innerHTML = `✅ You scored <strong>${score}</strong> out of ${questions.length}`;
+    retryBtn.style.display = 'inline-block';
+    clearInterval(timer);
+  }
+
+  nextBtn.addEventListener('click', () => {
+    // Check answer and update score
+    if(selectedAnswer === questions[current].correct) {
+      score++;
+    }
+
+    current++;
+    if(current < questions.length) {
+      renderQuestion(current);
+      nextBtn.disabled = true;
+    } else {
+      finishQuiz();
+    }
+  });
+
+  retryBtn.addEventListener('click', () => {
+    location.reload();
+  });
+
+  // Initialize
+  renderQuestion(current);
+  startTimer();
+</script>
+
+</body>
+</html>
