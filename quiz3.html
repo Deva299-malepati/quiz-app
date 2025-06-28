@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>HTML Quiz - CSS Questions</title>
+  <title>CSS Questions</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -132,6 +132,8 @@
     correct: "@media"
   }
 ];
+
+
   let current = 0;
   let score = 0;
   let selectedAnswer = null;
@@ -155,31 +157,38 @@
     selectedAnswer = null;
     nextBtn.disabled = true;
     quizForm.innerHTML = "";
+
     const q = questions[index];
     const questionBlock = document.createElement('div');
     questionBlock.className = 'question-block';
+
     const questionText = document.createElement('div');
     questionText.className = 'question-text';
     questionText.textContent = `${index + 1}. ${q.question}`;
     questionBlock.appendChild(questionText);
+
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'options';
+
     q.options.forEach(option => {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'radio';
       input.name = 'answer';
       input.value = option;
+
       input.addEventListener('change', () => {
         selectedAnswer = input.value;
         optionsDiv.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
         label.classList.add('selected');
         nextBtn.disabled = false;
       });
+
       label.appendChild(input);
       label.appendChild(document.createTextNode(option));
       optionsDiv.appendChild(label);
     });
+
     questionBlock.appendChild(optionsDiv);
     quizForm.appendChild(questionBlock);
   }
@@ -198,8 +207,10 @@
     retryBtn.style.display = 'inline-block';
     clearInterval(timer);
   }
+
   nextBtn.addEventListener('click', () => {
     userAnswers.push(selectedAnswer);
+
     current++;
     if(current < questions.length) {
       renderQuestion(current);
@@ -208,6 +219,10 @@
       finishQuiz();
     }
   });
+   retryBtn.addEventListener('click', () => {
+    location.reload();
+  });
+
   renderQuestion(current);
   startTimer();
 </script>
@@ -215,3 +230,4 @@
 
 </body>
 </html>
+
