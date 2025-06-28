@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>JavaScript Questions</title>
+  <title>HTML Quiz - CSS Questions</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,10 +22,24 @@
       max-width: 600px;
       width: 90%;
     }
+    #instructions {
+      text-align: left;
+    }
+    #start-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
     #timer {
       text-align: right;
       font-weight: bold;
       color: #c0392b;
+      display: none;
     }
     #result {
       font-weight: bold;
@@ -72,10 +86,14 @@
       border-radius: 5px;
       color: white;
       cursor: pointer;
+      display: none;
     }
     #next-btn:disabled {
       background-color: #a0c4ff;
       cursor: not-allowed;
+    }
+    #quiz-form {
+      display: none;
     }
   </style>
 </head>
@@ -83,57 +101,69 @@
 
 <div class="quiz-container">
   <h2>HTML Quiz</h2>
+  <div id="instructions">
+    <h3>Welcome to the HTML Quiz!</h3>
+    <p>Please read the following instructions before you begin:</p>
+    <ul>
+      <li>You have 5 minutes to complete the quiz.</li>
+      <li>Select the best answer for each question.</li>
+      <li>Click "Next" to go to the next question.</li>
+      <li>Your score will be shown at the end.</li>
+    </ul>
+    <button type="button" id="start-btn">Start Quiz</button>
+  </div>
   <div id="timer">Time Left: 5:00</div>
-  
-  <form id="quiz-form">
-  </form>
-
+  <form id="quiz-form"></form>
   <button type="button" id="next-btn" disabled>Next</button>
-  <button type="button" id="retry-btn" style="display:none;">Re-Quiz</button>
-
+  <button type="button" id="retry-btn">Re-Quiz</button>
   <div id="result"></div>
 </div>
-
 <script>
   const quizForm = document.getElementById('quiz-form');
   const nextBtn = document.getElementById('next-btn');
   const retryBtn = document.getElementById('retry-btn');
   const resultEl = document.getElementById('result');
   const timerEl = document.getElementById('timer');
-
- const questions = [
-    {
-      question: "Which keyword is used to declare a variable in JavaScript?",
-      options: ["var", "let", "both var and let"],
-      correct: "both var and let"
-    },
-    {
-      question: "How do you write a comment in JavaScript?",
-      options: ["// This is a comment", "<!-- This is a comment -->", "# This is a comment"],
-      correct: "// This is a comment"
-    },
-    {
-      question: "Which method converts a JSON string to a JavaScript object?",
-      options: ["JSON.parse()", "JSON.stringify()", "JSON.convert()"],
-      correct: "JSON.parse()"
-    },
-    {
-      question: "What is the output of: typeof NaN?",
-      options: ["number", "NaN", "undefined"],
-      correct: "number"
-    },
-    {
-      question: "Which symbol is used for strict equality comparison in JavaScript?",
-      options: ["=", "==", "==="],
-      correct: "==="
-    }
-  ];
-
-
+  const instructionsEl = document.getElementById('instructions');
+  const startBtn = document.getElementById('start-btn');
+  const questions = [
+  {
+    question: "What is the correct syntax to declare a constant in JavaScript?",
+    options: [
+      "var myConstant = 10;",
+      "let myConstant = 10;",
+      "const myConstant = 10;"
+    ],
+    correct: "const myConstant = 10;"
+  },
+  {
+    question: "Which method is used to add an element at the end of an array?",
+    options: ["push()", "pop()", "shift()"],
+    correct: "push()"
+  },
+  {
+    question: "What will `typeof NaN` return?",
+    options: ["'undefined'", "'number'", "'NaN'"],
+    correct: "'number'"
+  },
+  {
+    question: "Which of the following is a JavaScript data type?",
+    options: ["Number", "Float", "Decimal"],
+    correct: "Number"
+  },
+  {
+    question: "What does the `this` keyword refer to in a regular function (non-arrow)?",
+    options: [
+      "It refers to the global object or the object that called the function",
+      "It refers to the function itself",
+      "It is always undefined"
+    ],
+    correct: "It refers to the global object or the object that called the function"
+  }
+];
   let current = 0;
   let score = 0;
   let selectedAnswer = null;
-  let userAnswers = [];
   let globalTime = 300;
   let timer;
   function startTimer() {
@@ -148,65 +178,52 @@
       }
     }, 1000);
   }
-
   function renderQuestion(index) {
     selectedAnswer = null;
     nextBtn.disabled = true;
     quizForm.innerHTML = "";
-
     const q = questions[index];
     const questionBlock = document.createElement('div');
     questionBlock.className = 'question-block';
-
     const questionText = document.createElement('div');
     questionText.className = 'question-text';
     questionText.textContent = `${index + 1}. ${q.question}`;
     questionBlock.appendChild(questionText);
-
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'options';
-
     q.options.forEach(option => {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'radio';
       input.name = 'answer';
       input.value = option;
-
       input.addEventListener('change', () => {
         selectedAnswer = input.value;
         optionsDiv.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
         label.classList.add('selected');
         nextBtn.disabled = false;
       });
-
       label.appendChild(input);
       label.appendChild(document.createTextNode(option));
       optionsDiv.appendChild(label);
     });
-
     questionBlock.appendChild(optionsDiv);
     quizForm.appendChild(questionBlock);
   }
+
   function finishQuiz() {
     quizForm.style.display = 'none';
     nextBtn.style.display = 'none';
     timerEl.style.display = 'none';
-    localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
-    localStorage.setItem('correctAnswers', JSON.stringify(questions.map(q => q.correct)));
-    let storedUser = JSON.parse(localStorage.getItem('userAnswers'));
-    let storedCorrect = JSON.parse(localStorage.getItem('correctAnswers'));
-    score = storedUser.reduce((total, answer, i) => {
-      return answer === storedCorrect[i] ? total + 1 : total;
-    }, 0);
     resultEl.innerHTML = `✅ You scored <strong>${score}</strong> out of ${questions.length}`;
     retryBtn.style.display = 'inline-block';
     clearInterval(timer);
   }
 
   nextBtn.addEventListener('click', () => {
-    userAnswers.push(selectedAnswer);
-
+    if(selectedAnswer === questions[current].correct) {
+      score++;
+    }
     current++;
     if(current < questions.length) {
       renderQuestion(current);
@@ -215,16 +232,20 @@
       finishQuiz();
     }
   });
-   retryBtn.addEventListener('click', () => {
+
+  retryBtn.addEventListener('click', () => {
     location.reload();
   });
 
-  renderQuestion(current);
-  startTimer();
+  startBtn.addEventListener('click', () => {
+    instructionsEl.style.display = 'none';
+    timerEl.style.display = 'block';
+    quizForm.style.display = 'block';
+    nextBtn.style.display = 'inline-block';
+    renderQuestion(current);
+    startTimer();
+  });
 </script>
-
 
 </body>
 </html>
-
-     
