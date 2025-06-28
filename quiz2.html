@@ -86,7 +86,6 @@
   <div id="timer">Time Left: 5:00</div>
   
   <form id="quiz-form">
-    <!-- Questions will be dynamically inserted here -->
   </form>
 
   <button type="button" id="next-btn" disabled>Next</button>
@@ -102,7 +101,6 @@
   const resultEl = document.getElementById('result');
   const timerEl = document.getElementById('timer');
 
-  // Questions stored as JS objects
   const questions = [
     {
       question: "What does HTML stand for?",
@@ -139,7 +137,7 @@
   let score = 0;
   let selectedAnswer = null;
 
-  let globalTime = 300; // 5 minutes in seconds
+  let globalTime = 300;
   let timer;
 
   function startTimer() {
@@ -158,21 +156,18 @@
   function renderQuestion(index) {
     selectedAnswer = null;
     nextBtn.disabled = true;
-    quizForm.innerHTML = ""; // clear previous question
+    quizForm.innerHTML = ""; 
 
     const q = questions[index];
 
-    // Question block
     const questionBlock = document.createElement('div');
     questionBlock.className = 'question-block';
 
-    // Question text
     const questionText = document.createElement('div');
     questionText.className = 'question-text';
     questionText.textContent = `${index + 1}. ${q.question}`;
     questionBlock.appendChild(questionText);
 
-    // Options
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'options';
 
@@ -183,10 +178,8 @@
       input.name = 'answer';
       input.value = option;
 
-      // Event to select answer
       input.addEventListener('change', () => {
         selectedAnswer = input.value;
-        // Remove previous selected style
         optionsDiv.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
         label.classList.add('selected');
         nextBtn.disabled = false;
@@ -212,7 +205,6 @@
   }
 
   nextBtn.addEventListener('click', () => {
-    // Check answer and update score
     if(selectedAnswer === questions[current].correct) {
       score++;
     }
@@ -230,7 +222,6 @@
     location.reload();
   });
 
-  // Initialize
   renderQuestion(current);
   startTimer();
 </script>
