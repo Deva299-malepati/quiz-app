@@ -86,11 +86,9 @@
   <div id="timer">Time Left: 5:00</div>
   
   <form id="quiz-form">
-    <!-- Questions will be dynamically inserted here -->
   </form>
 
   <button type="button" id="next-btn" disabled>Next</button>
-  <button type="button" id="retry-btn" style="display:none;">Re-Quiz</button>
 
   <div id="result"></div>
 </div>
@@ -98,11 +96,9 @@
 <script>
   const quizForm = document.getElementById('quiz-form');
   const nextBtn = document.getElementById('next-btn');
-  const retryBtn = document.getElementById('retry-btn');
   const resultEl = document.getElementById('result');
   const timerEl = document.getElementById('timer');
 
-  // JavaScript questions
   const questions = [
     {
       question: "Which keyword is used to declare a variable in JavaScript?",
@@ -135,7 +131,7 @@
   let score = 0;
   let selectedAnswer = null;
 
-  let globalTime = 300; // 5 minutes in seconds
+  let globalTime = 300; 
   let timer;
 
   function startTimer() {
@@ -154,65 +150,48 @@
   function renderQuestion(index) {
     selectedAnswer = null;
     nextBtn.disabled = true;
-    quizForm.innerHTML = ""; // clear previous question
-
+    quizForm.innerHTML = ""; 
     const q = questions[index];
-
-    // Question block
     const questionBlock = document.createElement('div');
     questionBlock.className = 'question-block';
-
-    // Question text
     const questionText = document.createElement('div');
     questionText.className = 'question-text';
     questionText.textContent = `${index + 1}. ${q.question}`;
     questionBlock.appendChild(questionText);
 
-    // Options
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'options';
-
     q.options.forEach((option, i) => {
       const label = document.createElement('label');
       const input = document.createElement('input');
       input.type = 'radio';
       input.name = 'answer';
       input.value = option;
-
-      // Event to select answer
       input.addEventListener('change', () => {
         selectedAnswer = input.value;
-        // Remove previous selected style
         optionsDiv.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
         label.classList.add('selected');
         nextBtn.disabled = false;
       });
-
       label.appendChild(input);
       label.appendChild(document.createTextNode(option));
       optionsDiv.appendChild(label);
     });
-
     questionBlock.appendChild(optionsDiv);
     quizForm.appendChild(questionBlock);
   }
-
   function finishQuiz() {
     quizForm.style.display = 'none';
     nextBtn.style.display = 'none';
     timerEl.style.display = 'none';
-
     resultEl.innerHTML = `✅ You scored <strong>${score}</strong> out of ${questions.length}`;
     retryBtn.style.display = 'inline-block';
     clearInterval(timer);
   }
-
   nextBtn.addEventListener('click', () => {
-    // Check answer and update score
     if(selectedAnswer === questions[current].correct) {
       score++;
     }
-
     current++;
     if(current < questions.length) {
       renderQuestion(current);
@@ -221,12 +200,6 @@
       finishQuiz();
     }
   });
-
-  retryBtn.addEventListener('click', () => {
-    location.reload();
-  });
-
-  // Initialize
   renderQuestion(current);
   startTimer();
 </script>
